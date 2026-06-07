@@ -1,7 +1,0 @@
-sudo: false
-bundler_args: "--without development"
-script: bundle exec rspec
-rvm:
-  - '2.3'
-  - '2.4'
-  - '2.5'
