@@ -84,6 +84,16 @@ describe GitDeploy::Configuration do
       it { expect(subject.deploy_to).to eq('~/path/to/app') }
     end
 
+    context "scp-style relative path" do
+      it 'resolves against the remote home directory' do
+        instance = GitDeploy.new([], remote: 'production', noop: true)
+        instance.send(:git_config)['remote -v'] = "production\tgit@example.com:apps/myapp (fetch)"
+        allow(instance).to receive(:run).with('echo $HOME').and_return("/home/git\n")
+
+        expect(instance.send(:deploy_to)).to eq('/home/git/apps/myapp')
+      end
+    end
+
     context "pushurl only" do
       before {
         remote = options.fetch(:remote)

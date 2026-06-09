@@ -11,13 +11,17 @@ class GitDeploy
     def_delegator :remote_url, :port, :remote_port
 
     def deploy_to
-      @deploy_to ||= begin
-        if remote_url.path.start_with? '/~/'
-          remote_url.path[1..-1]
-        else
-          remote_url.path 
-        end
-      end
+      @deploy_to ||= normalize_deploy_path(
+        GitDeploy::RemotePath.deploy_path(remote_url_string) { remote_home }
+      )
+    end
+
+    def remote_url_string(remote = options[:remote])
+      remote_urls(remote).first
+    end
+
+    def normalize_deploy_path(path)
+      path.start_with?('/~/') ? path[1..-1] : path
     end
 
     def remote_user
