@@ -91,5 +91,12 @@ class GitDeploy
     def tracked_for(branch)
       git_config['config branch.%s.merge' % normalize_branch(branch)]
     end
+
+    def require_remote!
+      remote = options[:remote]
+      if remote.nil? || remote.to_s.strip.empty?
+        abort "Error: Specify a remote with -r (e.g. git deploy setup -r production)"
+      end
+    end
   end
 end
