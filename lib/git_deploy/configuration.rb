@@ -28,7 +28,10 @@ class GitDeploy
     end
 
     def branch
-      'master'
+      @branch ||= begin
+        ref = current_branch
+        ref && !ref.empty? ? normalize_branch(ref) : 'master'
+      end
     end
 
     def git_config

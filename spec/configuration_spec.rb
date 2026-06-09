@@ -1,5 +1,4 @@
-require 'rspec/autorun'
-require 'git_deploy/configuration'
+require 'spec_helper'
 
 describe GitDeploy::Configuration do
 
@@ -25,32 +24,64 @@ describe GitDeploy::Configuration do
     stub_git_config("remote -v", "#{remote}\t#{url} (fetch)")
   end
 
+  describe '#branch' do
+    it 'uses the current branch when HEAD is on main' do
+      stub_git_config('symbolic-ref -q HEAD', 'refs/heads/main')
+      expect(subject.branch).to eq('main')
+    end
+
+    it 'uses master when no symbolic ref is available' do
+      stub_git_config('symbolic-ref -q HEAD', nil)
+      expect(subject.branch).to eq('master')
+    end
+
+    it 'uses master when on the master branch' do
+      stub_git_config('symbolic-ref -q HEAD', 'refs/heads/master')
+      expect(subject.branch).to eq('master')
+    end
+  end
+
+  describe '#tracked_branch' do
+    it 'returns the branch name for the current HEAD' do
+      stub_git_config('symbolic-ref -q HEAD', 'refs/heads/main')
+      stub_git_config('config branch.main.merge', 'refs/heads/main')
+      expect(subject.tracked_branch).to eq('main')
+    end
+  end
+
+  describe '#remote_for' do
+    it 'returns the remote tracking a branch' do
+      stub_git_config('config branch.main.remote', 'production')
+      expect(subject.remote_for('refs/heads/main')).to eq('production')
+    end
+  end
+
   describe "extracting user/host from remote url" do
     context "ssh url" do
       before { stub_remote_url 'ssh://jon%20doe@example.com:88/path/to/app' }
 
-      its(:host)        { should eq('example.com') }
-      its(:remote_port) { should eq(88) }
-      its(:remote_user) { should eq('jon doe') }
-      its(:deploy_to)   { should eq('/path/to/app') }
+      it { expect(subject.host).to eq('example.com') }
+      it { expect(subject.remote_port).to eq(88) }
+      it { expect(subject.remote_user).to eq('jon doe') }
+      it { expect(subject.deploy_to).to eq('/path/to/app') }
     end
 
     context "scp-style" do
       before { stub_remote_url 'git@example.com:/path/to/app' }
 
-      its(:host)        { should eq('example.com') }
-      its(:remote_port) { should be_nil }
-      its(:remote_user) { should eq('git') }
-      its(:deploy_to)   { should eq('/path/to/app') }
+      it { expect(subject.host).to eq('example.com') }
+      it { expect(subject.remote_port).to be_nil }
+      it { expect(subject.remote_user).to eq('git') }
+      it { expect(subject.deploy_to).to eq('/path/to/app') }
     end
 
     context "scp-style with home" do
       before { stub_remote_url 'git@example.com:~/path/to/app' }
 
-      its(:host)        { should eq('example.com') }
-      its(:remote_port) { should be_nil }
-      its(:remote_user) { should eq('git') }
-      its(:deploy_to)   { should eq('~/path/to/app') }
+      it { expect(subject.host).to eq('example.com') }
+      it { expect(subject.remote_port).to be_nil }
+      it { expect(subject.remote_user).to eq('git') }
+      it { expect(subject.deploy_to).to eq('~/path/to/app') }
     end
 
     context "pushurl only" do
@@ -60,8 +91,8 @@ describe GitDeploy::Configuration do
         stub_git_config("remote -v", "#{remote}\t\n#{remote}\t#{url} (push)")
       }
 
-      its(:host)        { should eq('example.com') }
-      its(:remote_user) { should eq('git') }
+      it { expect(subject.host).to eq('example.com') }
+      it { expect(subject.remote_user).to eq('git') }
     end
   end
 

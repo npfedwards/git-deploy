@@ -11,7 +11,7 @@ Scoped fixes for this release:
 | Ruby 3.x compatibility | [#88](https://github.com/mislav/git-deploy/issues/88), [#67](https://github.com/mislav/git-deploy/issues/67) |
 | Dynamic default branch (`main` / `master`) | Hardcoded `master` in setup |
 | Dependency upgrades (Thor, net-ssh, net-scp) | OpenSSL / Ruby 3.2+ SSH failures |
-| Modern CI (GitHub Actions, Ruby 2.7 + 3.x) | Travis CI retired |
+| Modern CI (GitHub Actions, Ruby 2.7–4.0) | Travis CI retired |
 | Publish as `git-deploy-ng` on RubyGems | Avoids namespace conflict with upstream gem |
 
 ## Ideas under consideration (post-v0.8.0)
