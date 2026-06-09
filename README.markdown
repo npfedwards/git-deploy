@@ -149,5 +149,24 @@ Extra commands
 * `git deploy upload <files>` - Copy local files to the remote app
 
 
+Troubleshooting
+---------------
+
+### `unsupported key type ssh-ed25519`
+
+Modern OpenSSH keys (ed25519) require optional gems that net-ssh does not bundle:
+
+```sh
+gem install ed25519 bcrypt_pbkdf
+```
+
+git-deploy-ng will print this command if the gems are missing when connecting.
+
+### Still running upstream `git-deploy` 0.7.0?
+
+The original gem targets older Ruby and net-ssh versions. Migrate to `git-deploy-ng`
+on Ruby 2.7+ — see [Migrating from mislav/git-deploy](#migrating-from-mislavgit-deploy).
+
+
 
   [heroku]: http://heroku.com/

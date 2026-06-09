@@ -97,6 +97,23 @@ class GitDeploy
         at_exit { ssh.close }
         ssh
       end
+    rescue NotImplementedError, Gem::MissingSpecError => e
+      abort ed25519_ssh_help if ed25519_ssh_error?(e)
+      raise
+    end
+
+    def ed25519_ssh_error?(error)
+      error.message.downcase.include?('ed25519')
+    end
+
+    def ed25519_ssh_help
+      <<~HELP
+        Error: Your SSH key requires ed25519 support, but the optional gems are not installed.
+
+          gem install ed25519 bcrypt_pbkdf
+
+        See https://github.com/net-ssh/net-ssh/issues/565
+      HELP
     end
   end
 end
