@@ -6,6 +6,7 @@ class GitDeploy < Thor
   LOCAL_DIR = File.expand_path('..', __FILE__)
 
   require 'git_deploy/configuration'
+  require 'git_deploy/remote_path'
   require 'git_deploy/ssh_methods'
   include Configuration
   include SSHMethods
