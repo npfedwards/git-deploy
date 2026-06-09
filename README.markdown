@@ -1,16 +1,33 @@
 Easy git deployment
 ===================
 
+Community continuation of [mislav/git-deploy](https://github.com/mislav/git-deploy), published as **git-deploy-ng**. The CLI is unchanged: `git deploy <command>`.
+
 Straightforward, [Heroku][]-style, push-based deployment. Your deploys can become as simple as this:
 
-    $ git push production master
+    $ git push production main
 
-To get started, install the "git-deploy" gem.
+To get started, install the gem on the machine that runs setup (once per project):
 
-    gem install git-deploy
+    gem install git-deploy-ng
 
 Only the person who is setting up deployment for the first time needs to install
-the gem. You don't have to add it to your project's Gemfile.
+the gem. You don't have to add it to your project's Gemfile. Production servers
+do not need Ruby — only bash and git.
+
+See [ROADMAP.md](ROADMAP.md) for ideas under consideration and [CONTRIBUTING.md](CONTRIBUTING.md) to contribute.
+
+
+Migrating from mislav/git-deploy
+--------------------------------
+
+Requires **Ruby 2.7+** on the setup machine (including Ruby 4.x; system Ruby 2.6 on macOS is not supported).
+
+1. `gem uninstall git-deploy` (optional)
+2. `gem install git-deploy-ng`
+3. `git deploy hooks -r production` (optional, per host — refreshes remote hooks)
+
+Existing `deploy/` callback scripts in your apps do not need to change.
 
 
 Which app languages/frameworks are supported?
@@ -57,10 +74,12 @@ Initial setup
 4.  Push the code.
 
     ```sh
-    git push production master
+    git push production main
     ```
 
-3.  Login to your server and manually perform necessary one-time administrative operations. This might include:
+    Use whichever branch is checked out locally; `git deploy setup` configures the remote repo to match your current branch (`main` or `master`).
+
+5.  Login to your server and manually perform necessary one-time administrative operations. This might include:
     * set up the Apache/nginx virtual host for this application;
     * check your `config/database.yml` and create the production database.
 
@@ -74,10 +93,10 @@ should show it up and running.
 Now, subsequent deployments are done simply **by pushing to the branch that is
 currently checked out on the remote**:
 
-    git push production master
+    git push production main
 
 Because the deployments are performed with git, nobody else on the team needs to
-install the "git-deploy" gem.
+install the git-deploy gem.
 
 On every deploy, the default `deploy/after_push` script performs the following:
 
