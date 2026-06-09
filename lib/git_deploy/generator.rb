@@ -7,6 +7,16 @@ class GitDeploy::Generator < Thor::Group
     File.expand_path('../templates', __FILE__)
   end
 
+  def verify_deploy_target
+    if File.exist?('deploy') && !File.directory?('deploy')
+      abort "Error: './deploy' exists but is a file. Remove or rename it before running init."
+    end
+
+    if File.directory?('deploy') && !Dir.empty?('deploy')
+      say "Warning: deploy/ already exists and is not empty. Existing files will not be overwritten.", :yellow
+    end
+  end
+
   def copy_main_hook
     copy_hook 'after_push.sh', 'deploy/after_push'
   end
@@ -22,6 +32,8 @@ class GitDeploy::Generator < Thor::Group
   private
 
   def copy_hook(template, destination)
+    return if File.exist?(destination)
+
     copy_file template, destination
     chmod destination, 0744 unless File.executable? destination
   end
