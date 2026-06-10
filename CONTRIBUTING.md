@@ -28,7 +28,30 @@ v0.8.x must not break existing users migrating from upstream 0.7.0:
 
 ## Releases
 
-Releases are tagged (`v0.8.0`, etc.) and published to RubyGems as `git-deploy-ng`. Maintainers cut releases from `master` after CI passes.
+Releases are published to [RubyGems](https://rubygems.org/gems/git-deploy-ng) as `git-deploy-ng` via GitHub Actions when a version tag is pushed.
+
+### Cutting a release
+
+1. Bump `gem.version` in `git-deploy-ng.gemspec` on `master` and merge.
+2. Ensure CI is green on `master`.
+3. Tag the release commit (tag must match the gemspec version):
+
+    ```bash
+    git tag v0.9.0
+    git push origin v0.9.0
+    ```
+
+4. The **Release** workflow runs tests and publishes to RubyGems.
+
+### One-time setup (maintainers)
+
+Add a [RubyGems API key](https://guides.rubygems.org/api-key-scopes/) to the repository:
+
+- GitHub → Settings → Secrets and variables → Actions
+- Secret name: `RUBYGEMS_API_KEY`
+- Value: your RubyGems API key with **push** scope for `git-deploy-ng`
+
+The workflow will fail until this secret is configured.
 
 ## Internal planning
 

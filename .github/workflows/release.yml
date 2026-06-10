@@ -1,0 +1,33 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '4.0'
+          bundler-cache: true
+      - name: Run tests
+        run: bundle exec rspec
+      - name: Verify tag matches gemspec version
+        run: |
+          TAG_VERSION="${GITHUB_REF#refs/tags/v}"
+          GEM_VERSION=$(ruby -e "puts Gem::Specification.load('git-deploy-ng.gemspec').version")
+          if [ "$TAG_VERSION" != "$GEM_VERSION" ]; then
+            echo "::error::Tag v${TAG_VERSION} does not match gemspec version ${GEM_VERSION}"
+            exit 1
+          fi
+      - name: Publish to RubyGems
+        uses: rubygems/release-gem@v1
+        env:
+          GEM_HOST_API_KEY: ${{ secrets.RUBYGEMS_API_KEY }}
