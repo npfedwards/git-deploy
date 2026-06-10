@@ -91,6 +91,10 @@ class GitDeploy
       channels.each { |c| c.wait }
     end
 
+    def remote_home
+      @remote_home ||= run("echo $HOME").strip
+    end
+
     def ssh_connection
       @ssh ||= begin
         ssh = Net::SSH.start(host, remote_user, :port => remote_port || 22)
