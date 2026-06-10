@@ -101,4 +101,15 @@ class GitDeploy < Thor
       all
     }
   end
+
+  desc "download <files>", "Copy remote files from the app to local"
+  def download(*files)
+    abort "Error: Specify at least one file to download" if files.empty?
+
+    scp_download files.inject({}) { |all, file|
+      file = file.strip
+      all[File.join(deploy_to, file)] = file
+      all
+    }
+  end
 end
