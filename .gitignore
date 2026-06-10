@@ -1,2 +1,4 @@
 plans/
 coverage/
+tmp/
+*.gem
