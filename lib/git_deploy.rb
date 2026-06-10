@@ -14,9 +14,11 @@ class GitDeploy < Thor
   class_option :noop, :aliases => '-n', :type => :boolean, :default => false
 
   desc "init", "Generates deployment customization scripts for your app"
+  method_option :template, :type => :string, :default => 'rails-passenger',
+    :desc => 'Template stack (rails-passenger, rails-puma, php-composer, generic)'
   def init
     require 'git_deploy/generator'
-    Generator::start([])
+    Generator.start(['--template', options[:template]])
   end
 
   desc "setup", "Create the remote git repository and install push hooks for it"

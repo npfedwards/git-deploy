@@ -14,7 +14,6 @@ if use_bundler
   BUNDLE_WITHOUT = ENV['BUNDLE_WITHOUT'] || 'development:test'
   bundler_args << '--without' << BUNDLE_WITHOUT unless BUNDLE_WITHOUT.empty?
 
-  # update gem bundle
   run "bundle install #{bundler_args.join(' ')}"
 end
 
@@ -27,18 +26,13 @@ if File.file? 'Rakefile'
     num_migrations = 0
   end
 
-  # run migrations if new ones have been added
   tasks << "db:migrate" if num_migrations > 0
 
-  # precompile assets
-  changed_assets = `git diff #{oldrev} #{newrev} --name-only -z -- app/assets`.split("\0")
+  asset_paths = %w[app/assets app/javascript config/importmap.rb package.json yarn.lock]
+  changed_assets = `git diff #{oldrev} #{newrev} --name-only -z -- #{asset_paths.join(' ')}`.split("\0")
   tasks << "assets:precompile" if changed_assets.size > 0
 
   run "#{rake_cmd} #{tasks.join(' ')} RAILS_ENV=#{RAILS_ENV}" if tasks.any?
 end
 
-# clear cached assets (unversioned/ignored files)
-run "git clean -x -f -- public/stylesheets public/javascripts"
-
-# clean unversioned files from vendor/plugins (e.g. old submodules)
-run "git clean -d -f -- vendor/plugins"
+run "git clean -x -f -- public/assets tmp/cache/assets" if Dir.exist?('public/assets')
