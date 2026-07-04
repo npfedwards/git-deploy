@@ -1,6 +1,6 @@
 # Contributing
 
-Thank you for contributing to git-deploy-ng. This project is a backwards-compatible continuation of [mislav/git-deploy](https://github.com/mislav/git-deploy).
+Thank you for contributing to git-deploy-ng. This project continues [mislav/git-deploy](https://github.com/mislav/git-deploy) — v0.8.x preserved upstream compatibility; v0.9.0 introduces minor CLI changes (see [Backwards compatibility](#backwards-compatibility)).
 
 ## Getting started
 
@@ -20,11 +20,27 @@ bundle exec rspec
 
 ## Backwards compatibility
 
-v0.8.x must not break existing users migrating from upstream 0.7.0:
+### v0.8.x
+
+Must not break existing users migrating from upstream 0.7.0:
 
 - Same `git deploy` subcommands and flags
 - Same default `post-receive` hook behaviour (improvements are opt-in via `git deploy hooks`)
 - Existing `deploy/` callback scripts in deployed apps should keep working unchanged
+
+### v0.9.0
+
+Minor intentional compatibility changes — called out in release notes. **Existing `deploy/*` callbacks in deployed apps stay unchanged.**
+
+| Change | Notes |
+|--------|-------|
+| Required `-r` on remote commands | No default remote (was `origin` in older docs) |
+| Setup safety | `setup` requires explicit remote; `--force` to overwrite hooks |
+| Init collision guard | Warn when `deploy/` non-empty; abort if `deploy` is a file |
+| Relative remote paths | SCP-style paths without leading `/` resolve against remote `$HOME` |
+| New commands / flags | `download`, `init --template` |
+
+See [ROADMAP.md](ROADMAP.md#v090-in-progress) for scope.
 
 ## Releases
 
@@ -42,16 +58,6 @@ Releases are published to [RubyGems](https://rubygems.org/gems/git-deploy-ng) as
     ```
 
 4. The **Release** workflow runs tests and publishes to RubyGems.
-
-### One-time setup (maintainers)
-
-Add a [RubyGems API key](https://guides.rubygems.org/api-key-scopes/) to the repository:
-
-- GitHub → Settings → Secrets and variables → Actions
-- Secret name: `RUBYGEMS_API_KEY`
-- Value: your RubyGems API key with **push** scope for `git-deploy-ng`
-
-The workflow will fail until this secret is configured.
 
 ## Internal planning
 
