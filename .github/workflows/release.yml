@@ -6,7 +6,7 @@ on:
       - 'v*'
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   release:
@@ -27,6 +27,23 @@ jobs:
             echo "::error::Tag v${TAG_VERSION} does not match gemspec version ${GEM_VERSION}"
             exit 1
           fi
+      - name: Verify CHANGELOG documents this release
+        run: |
+          VERSION="${GITHUB_REF#refs/tags/v}"
+          ruby bin/update-changelog "$VERSION" --check
+      - name: Prepare GitHub release notes
+        run: |
+          VERSION="${GITHUB_REF#refs/tags/v}"
+          export VERSION
+          ruby -r ./lib/git_deploy/changelog -e "
+            body = GitDeploy::Changelog.extract_section(File.read('CHANGELOG.md'), ENV.fetch('VERSION'))
+            abort 'Empty CHANGELOG section' if body.nil? || body.strip.empty?
+            File.write('release-notes.md', body)
+          "
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          body_path: release-notes.md
       - name: Publish to RubyGems
         uses: rubygems/release-gem@v1
         env:

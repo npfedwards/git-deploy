@@ -49,15 +49,24 @@ Releases are published to [RubyGems](https://rubygems.org/gems/git-deploy-ng) as
 ### Cutting a release
 
 1. Bump `gem.version` in `git-deploy-ng.gemspec` on `master` and merge.
-2. Ensure CI is green on `master`.
-3. Tag the release commit (tag must match the gemspec version):
+2. Update the changelog from conventional commits since the last tag:
+
+    ```bash
+    ruby bin/update-changelog
+    git add CHANGELOG.md git-deploy-ng.gemspec
+    git commit -m "chore: prepare release X.Y.Z"
+    ```
+
+3. Ensure CI is green on `master`.
+4. Tag the release commit (tag must match the gemspec version):
 
     ```bash
     git tag v0.9.0
+    git push origin master
     git push origin v0.9.0
     ```
 
-4. The **Release** workflow runs tests and publishes to RubyGems.
+5. The **Release** workflow verifies the changelog, creates a GitHub Release, and publishes to RubyGems.
 
 ## Internal planning
 

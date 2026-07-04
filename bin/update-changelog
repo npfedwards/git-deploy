@@ -1,0 +1,47 @@
+#!/usr/bin/env ruby
+# encoding: utf-8
+require_relative '../lib/git_deploy/changelog'
+
+def usage
+  warn <<~USAGE
+    Usage: update-changelog [VERSION] [options]
+
+    Append a version section to CHANGELOG.md from conventional commits since the
+    latest tag. VERSION defaults to git-deploy-ng.gemspec.
+
+    Options:
+      --date YYYY-MM-DD   Release date (default: today)
+      --since REF         Git ref to start from (default: latest tag)
+      --check             Verify CHANGELOG.md documents VERSION and exit
+  USAGE
+  exit 1
+end
+
+args = ARGV.dup
+version = args.shift if args.first&.match?(/\A\d+\.\d+\.\d+\z/)
+
+date = Date.today.iso8601
+since_ref = GitDeploy::Changelog.latest_tag
+check = false
+path = 'CHANGELOG.md'
+
+while (arg = args.shift)
+  case arg
+  when '--help', '-h' then usage
+  when '--check' then check = true
+  when '--date' then date = args.shift || usage
+  when '--since' then since_ref = args.shift || usage
+  else usage
+  end
+end
+
+version ||= GitDeploy::Changelog.gemspec_version
+
+if check
+  content = File.read(path)
+  GitDeploy::Changelog.verify_version!(content, version)
+  puts "CHANGELOG.md documents version #{version}"
+else
+  GitDeploy::Changelog.update_file(path, version, date: date, since_ref: since_ref)
+  puts "Updated #{path} for version #{version}"
+end

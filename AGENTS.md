@@ -35,8 +35,9 @@ spec/                       # RSpec — integration-style, public interfaces
 ## Release
 
 - Gem: `git-deploy-ng` (not `git-deploy`).
-- Version in `git-deploy-ng.gemspec`. Tag `vX.Y.Z` triggers RubyGems publish (needs `RUBYGEMS_API_KEY` secret).
-- CI: `.github/workflows/ci.yml` (matrix test + gem build), `release.yml` (tag publish).
+- Version in `git-deploy-ng.gemspec`. Update `CHANGELOG.md` with `bin/update-changelog` before tagging.
+- Tag `vX.Y.Z` triggers RubyGems publish (needs `RUBYGEMS_API_KEY` secret).
+- CI: `.github/workflows/ci.yml` (matrix test + gem build), `release.yml` (tag publish + GitHub Release).
 
 ## Docs
 

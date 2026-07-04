@@ -41,4 +41,16 @@ describe 'GitHub workflows' do
     steps = release.dig('jobs', 'release', 'steps').map { |s| s['name'] }
     expect(steps).to include('Verify tag matches gemspec version')
   end
+
+  it 'verifies the changelog documents the release' do
+    steps = release.dig('jobs', 'release', 'steps').map { |s| s['name'] }
+    expect(steps).to include('Verify CHANGELOG documents this release')
+  end
+
+  it 'creates a GitHub release from the changelog section' do
+    steps = release.dig('jobs', 'release', 'steps')
+    gh_release = steps.find { |s| s['uses']&.start_with?('softprops/action-gh-release') }
+    expect(gh_release).not_to be_nil
+    expect(gh_release['with']['body_path']).to eq('release-notes.md')
+  end
 end

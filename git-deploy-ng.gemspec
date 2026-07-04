@@ -1,8 +1,8 @@
 # encoding: utf-8
 Gem::Specification.new do |gem|
   gem.name    = 'git-deploy-ng'
-  gem.version = '0.8.0'
-  gem.executables = %w[ git-deploy ]
+  gem.version = '0.9.0'
+  gem.executables = %w[ git-deploy update-changelog ]
 
   gem.add_dependency 'thor', '~> 1.3'
   gem.add_dependency 'net-ssh', '~> 7.0'
@@ -18,5 +18,5 @@ Gem::Specification.new do |gem|
   gem.homepage = 'https://github.com/npfedwards/git-deploy#readme'
   gem.license  = 'MIT'
 
-  gem.files = Dir['Rakefile', '{bin,lib,man,test,spec}/**/*', 'README*', 'LICENSE*', 'MAINTAINERS.md', 'CONTRIBUTING.md', 'ROADMAP.md', 'AGENTS.md']
+  gem.files = Dir['Rakefile', '{bin,lib,man,test,spec}/**/*', 'README*', 'LICENSE*', 'CHANGELOG.md', 'MAINTAINERS.md', 'CONTRIBUTING.md', 'ROADMAP.md', 'AGENTS.md']
 end
