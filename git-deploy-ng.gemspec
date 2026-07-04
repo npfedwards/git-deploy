@@ -18,5 +18,5 @@ Gem::Specification.new do |gem|
   gem.homepage = 'https://github.com/npfedwards/git-deploy#readme'
   gem.license  = 'MIT'
 
-  gem.files = Dir['Rakefile', '{bin,lib,man,test,spec}/**/*', 'README*', 'LICENSE*', 'MAINTAINERS.md', 'CONTRIBUTING.md', 'ROADMAP.md']
+  gem.files = Dir['Rakefile', '{bin,lib,man,test,spec}/**/*', 'README*', 'LICENSE*', 'MAINTAINERS.md', 'CONTRIBUTING.md', 'ROADMAP.md', 'AGENTS.md']
 end

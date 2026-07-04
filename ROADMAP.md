@@ -2,9 +2,7 @@
 
 Tracking for git-deploy-ng. **Nothing listed here is a commitment** — items may be reprioritised, dropped, or implemented differently. Any change that affects default behaviour will be called out explicitly in release notes.
 
-## v0.8.0 (in progress)
-
-Scoped fixes for this release:
+## v0.8.0 (released)
 
 | Fix | Upstream context |
 |-----|------------------|
@@ -13,6 +11,20 @@ Scoped fixes for this release:
 | Dependency upgrades (Thor, net-ssh, net-scp) | OpenSSL / Ruby 3.2+ SSH failures |
 | Modern CI (GitHub Actions, Ruby 2.7–4.0) | Travis CI retired |
 | Publish as `git-deploy-ng` on RubyGems | Avoids namespace conflict with upstream gem |
+
+## v0.9.0 (in progress)
+
+Minor CLI compatibility changes from v0.8.x. **Deployed `deploy/*` callbacks are unchanged** — see [CONTRIBUTING.md § Backwards compatibility](CONTRIBUTING.md#backwards-compatibility).
+
+| Change | Issue / PR |
+|--------|------------|
+| Required `-r` on remote commands | [#78](https://github.com/mislav/git-deploy/issues/78) |
+| Setup safety (`--force` for hook overwrite) | [#78](https://github.com/mislav/git-deploy/issues/78) |
+| Init collision warning | [#56](https://github.com/mislav/git-deploy/issues/56) |
+| Relative remote path resolution | [#57](https://github.com/mislav/git-deploy/issues/57) |
+| Framework init templates (`--template`) | [#4](https://github.com/npfedwards/git-deploy/issues/4), [#92](https://github.com/mislav/git-deploy/issues/92) |
+| `git deploy download` | [#83](https://github.com/mislav/git-deploy/issues/83) |
+| README + AGENTS docs | [#53](https://github.com/mislav/git-deploy/issues/53) |
 
 ## Ideas under consideration (post-v0.8.0)
 
