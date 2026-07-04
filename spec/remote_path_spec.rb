@@ -18,6 +18,12 @@ describe GitDeploy::RemotePath do
     it 'returns the path from ssh URLs' do
       expect(described_class.raw_path('ssh://git@example.com:88/apps/myapp')).to eq('/apps/myapp')
     end
+
+    it 'aborts when the url is missing' do
+      expect {
+        described_class.raw_path(nil)
+      }.to output(/No deploy remote URL configured/).to_stderr.and raise_error(SystemExit)
+    end
   end
 
   describe '.deploy_path' do

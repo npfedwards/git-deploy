@@ -21,6 +21,28 @@ describe GitDeploy do
     end
   end
 
+  describe '#download' do
+    it 'copies remote files into the local app directory' do
+      instance = described_class.new([], remote: 'production', noop: true)
+      downloads = {}
+
+      allow(instance).to receive(:scp_download) { |files| downloads.merge!(files) }
+      instance.send(:git_config)['remote -v'] = "production\tgit@example.com:/apps/demo (fetch)"
+
+      instance.download('log/deploy.log')
+
+      expect(downloads['/apps/demo/log/deploy.log']).to eq('log/deploy.log')
+    end
+
+    it 'requires a remote' do
+      instance = described_class.new([], noop: true)
+
+      expect {
+        instance.download('index.html')
+      }.to output(/Specify a remote with -r/).to_stderr.and raise_error(SystemExit)
+    end
+  end
+
   describe '#restart' do
     it 'runs the deploy restart script on the server' do
       instance = described_class.new([], remote: 'production', noop: true)

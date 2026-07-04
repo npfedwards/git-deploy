@@ -1,5 +1,6 @@
 class GitDeploy
   module SSHMethods
+    require 'fileutils'
     private
 
     def sudo_cmd
@@ -87,6 +88,16 @@ class GitDeploy
       files.each do |local, remote|
         puts "FILE: [local] #{local.sub(LOCAL_DIR + '/', '')}  ->  [#{options[:remote]}] #{remote}"
         channels << ssh_connection.scp.upload(local, remote) unless options.noop?
+      end
+      channels.each { |c| c.wait }
+    end
+
+    def scp_download(files)
+      channels = []
+      files.each do |remote, local|
+        puts "FILE: [#{options[:remote]}] #{remote}  ->  [local] #{local}"
+        FileUtils.mkdir_p(File.dirname(local)) unless local.end_with?('/') || File.dirname(local) == '.'
+        channels << ssh_connection.scp.download(remote, local) unless options.noop?
       end
       channels.each { |c| c.wait }
     end
