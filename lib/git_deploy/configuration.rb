@@ -11,9 +11,12 @@ class GitDeploy
     def_delegator :remote_url, :port, :remote_port
 
     def deploy_to
-      @deploy_to ||= normalize_deploy_path(
-        GitDeploy::RemotePath.deploy_path(remote_url_string) { remote_home }
-      )
+      @deploy_to ||= begin
+        remote_url
+        normalize_deploy_path(
+          GitDeploy::RemotePath.deploy_path(remote_url_string) { remote_home }
+        )
+      end
     end
 
     def remote_url_string(remote = options[:remote])
@@ -60,6 +63,7 @@ class GitDeploy
       @remote_url[remote] ||= begin
         url = remote_urls(remote).first
         if url.nil?
+          require_remote! if remote.nil? || remote.to_s.strip.empty?
           abort "Error: Remote url not found for remote #{remote.inspect}"
         elsif url =~ /(^|@)github\.com\b/
           abort "Error: Remote url for #{remote.inspect} points to GitHub. Can't deploy there!"

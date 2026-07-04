@@ -5,6 +5,10 @@ class GitDeploy
     SCP_PATH = %r{\A(?:[^@]+@)?[^:]+:(.+)\z}
 
     def self.raw_path(url)
+      if url.nil? || url.to_s.strip.empty?
+        abort "Error: No deploy remote URL configured. Specify a remote with -r."
+      end
+
       if url.match?(%r{\A[\w-]+://})
         URI.parse(url).path
       else
