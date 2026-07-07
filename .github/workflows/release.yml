@@ -44,7 +44,9 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           body_path: release-notes.md
-      - name: Publish to RubyGems
-        uses: rubygems/release-gem@v1
+      - name: Build and publish to RubyGems
+        run: |
+          gem build git-deploy-ng.gemspec
+          gem push git-deploy-ng-*.gem
         env:
           GEM_HOST_API_KEY: ${{ secrets.RUBYGEMS_API_KEY }}
