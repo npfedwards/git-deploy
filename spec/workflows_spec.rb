@@ -24,10 +24,11 @@ describe 'GitHub workflows' do
     expect(steps).to include('bundle exec rspec')
   end
 
-  it 'uses the RubyGems release action with an API key secret' do
+  it 'publishes to RubyGems with the API key secret' do
     steps = release.dig('jobs', 'release', 'steps')
-    publish = steps.find { |s| s['uses']&.start_with?('rubygems/release-gem') }
+    publish = steps.find { |s| s['name'] == 'Build and publish to RubyGems' }
     expect(publish).not_to be_nil
+    expect(publish['run']).to include('gem push')
     expect(publish['env']).to include('GEM_HOST_API_KEY')
   end
 
