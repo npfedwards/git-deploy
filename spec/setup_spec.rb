@@ -81,4 +81,33 @@ describe GitDeploy do
       expect(init_cmd).not_to include('sed')
     end
   end
+
+  # Regression: Thor replaces inherited options when invoke gets an explicit hash,
+  # and invoke builds a new instance — so do not stub invoke (that hid remote=nil).
+  describe '#setup → #hooks invoke' do
+    let(:uploads) { {} }
+    let(:git_config) do
+      Hash.new.tap do |h|
+        h['remote -v'] = "production\tgit@example.com:/apps/demo (fetch)"
+        h['symbolic-ref -q HEAD'] = 'refs/heads/master'
+      end
+    end
+
+    before do
+      allow_any_instance_of(described_class).to receive(:git_config).and_return(git_config)
+      allow_any_instance_of(described_class).to receive(:run_test).and_return(false)
+      allow_any_instance_of(described_class).to receive(:run)
+      allow_any_instance_of(described_class).to receive(:scp_upload) do |_instance, files|
+        uploads.merge!(files)
+      end
+    end
+
+    it 'passes remote through invoke so hooks does not abort' do
+      expect {
+        described_class.start(%w[setup -r production -n])
+      }.not_to output(/Specify a remote with -r/).to_stderr
+
+      expect(uploads.values).to include('/apps/demo/.git/hooks/post-receive')
+    end
+  end
 end
