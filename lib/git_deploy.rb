@@ -54,7 +54,8 @@ class GitDeploy < Thor
       cmd << "git config receive.denyCurrentBranch ignore"
     end
 
-    invoke :hooks, [], force: options[:force]
+    # Thor replaces inherited options when an explicit hash is passed — include :remote.
+    invoke :hooks, [], remote: options[:remote], force: options[:force]
   end
 
   desc "hooks", "Installs git hooks to the remote repository"
