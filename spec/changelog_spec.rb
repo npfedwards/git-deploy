@@ -104,7 +104,7 @@ describe GitDeploy::Changelog do
 
   describe '.gemspec_version' do
     it 'reads the version from git-deploy-ng.gemspec' do
-      expect(described_class.gemspec_version).to eq('0.9.0')
+      expect(described_class.gemspec_version).to eq('0.9.1')
     end
   end
 end

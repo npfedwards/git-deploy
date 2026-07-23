@@ -1,7 +1,7 @@
 # encoding: utf-8
 Gem::Specification.new do |gem|
   gem.name    = 'git-deploy-ng'
-  gem.version = '0.9.0'
+  gem.version = '0.9.1'
   gem.executables = %w[ git-deploy update-changelog ]
 
   gem.add_dependency 'thor', '~> 1.3'
