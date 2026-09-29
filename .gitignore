@@ -2,3 +2,5 @@ plans/
 coverage/
 tmp/
 *.gem
+# Ephemeral queue state (documentation-policy.md § Work queues, rules 1-2)
+okf-bundle/work-queues/
